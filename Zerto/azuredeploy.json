@@ -23,23 +23,22 @@
     },
     "vmAdminPassword": {
       "type": "securestring"
-    },   
+    },
     "pipDnsName": {
       "type": "string",
       "minLength": 1
     },
-	"nsgName": {
-	"type" : "string"
-	}
-    
+    "nsgName": {
+      "type": "string"
+    }
   },
   "variables": {
-    "storageAccountName": "[concat('zerto', uniqueString(resourceGroup().id))]",
-    "vnetPrefix": "10.0.0.0/16",
-    "vnetSubnet1Name": "Subnet-1",
-    "vnetSubnet1Prefix": "10.0.0.0/24",
-    "vnetSubnet2Name": "Subnet-2",
-    "vnetSubnet2Prefix": "10.0.1.0/24",
+    "storageAccountName": "[concat('wcadzerto', uniqueString(resourceGroup().id))]",
+    "vnetPrefix": "10.150.0.0/16",
+    "vnetSubnet1Name": "WCSubnet-1",
+    "vnetSubnet1Prefix": "10.150.0.0/24",
+    "vnetSubnet2Name": "WCSubnet-2",
+    "vnetSubnet2Prefix": "10.150.1.0/24",
     "vmImagePublisher": "MicrosoftWindowsServer",
     "vmImageOffer": "WindowsServer",
     "vmOSDiskName": "vmOSDisk",
@@ -49,8 +48,6 @@
     "vmStorageAccountContainerName": "vhds",
     "vmNicName": "[concat(parameters('vmName'), 'NetworkInterface')]",
     "pipName": "pip"
-    
-
   },
   "resources": [
     {
@@ -61,7 +58,7 @@
       "sku": {
         "name": "[parameters('storageAccountType')]"
       },
-      "dependsOn": [ ],
+      "dependsOn": [],
       "tags": {
         "displayName": "storageAccount"
       },
@@ -72,7 +69,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[resourceGroup().location]",
       "apiVersion": "2016-03-30",
-      "dependsOn": [ ],
+      "dependsOn": [],
       "tags": {
         "displayName": "vnet"
       },
@@ -125,9 +122,9 @@
             }
           }
         ],
-		"networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
-                }
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+        }
       }
     },
     {
@@ -186,7 +183,7 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
       "apiVersion": "2016-03-30",
-      "dependsOn": [ ],
+      "dependsOn": [],
       "tags": {
         "displayName": "pip"
       },
@@ -197,34 +194,33 @@
         }
       }
     },
-	{          
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('nsgName')]",
-            "apiVersion": "2017-06-01",
-            "location": "[resourceGroup().location]",            
-            "properties": { 
-					"securityRules": [
-                    {
-                        "name": "AllowRDP",
-                        "etag": "W/\"ec1cdead-18a3-4ae4-b0fa-1d58260ead30\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "protocol": "TCP",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "3389",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 100,
-                            "direction": "Inbound",
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    }
-                ]			
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('nsgName')]",
+      "apiVersion": "2017-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "AllowRDP",
+            "etag": "W/\"ec1cdead-18a3-4ae4-b0fa-1d58260ead30\"",
+            "properties": {
+              "provisioningState": "Succeeded",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound",
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
             }
-        }
-    
+          }
+        ]
+      }
+    }
   ],
   "outputs": {}
 }
